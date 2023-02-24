@@ -5,7 +5,7 @@ const counterEl = document.getElementById('counter');
 const addMatchEl = document.getElementById('add-match');
 const addMatchScoreEl = document.querySelector('.all-matches');
 const resetEl = document.getElementById('reset');
-console.log("counterEl:", counterEl.innerHTML);
+const deleteEl = document.querySelector('.lws-delete');
 
 // action identifiers
 const INCREMENT = "increment";
@@ -129,8 +129,17 @@ addMatchEl.addEventListener('click', function() {
 resetEl.addEventListener('click', function() {
   const allMatches = document.querySelectorAll('.match');
   allMatches.forEach((match) => {
-    match.remove();
+    //clear all matches scores
+    match.querySelector('#counter').innerHTML = 0;
+    //clear all matches increment and decrement values
+    match.querySelector('#increment').value = '';
+    match.querySelector('#decrement').value = '';
   });
+});
+
+//delete particular match
+deleteEl.addEventListener('click', function(e) {
+  e.target.parentElement.parentElement.parentElement.remove();
 });
 
 
