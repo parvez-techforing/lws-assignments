@@ -3,39 +3,46 @@ const incrementEl = document.getElementById('increment');
 const decrementEl = document.getElementById('decrement');
 const counterEl = document.getElementById('counter');
 const addMatchEl = document.getElementById('add-match');
+const addMatchScoreEl = document.querySelector('.all-matches');
+const resetEl = document.getElementById('reset');
+console.log("counterEl:", counterEl.innerHTML);
 
 // action identifiers
 const INCREMENT = "increment";
 const DECREMENT = "decrement";
-
-//action creators
-const increment = () => {
-  return {
-    type: INCREMENT
-  }
-}
-
-const decrement = () => {
-  return {
-    type: DECREMENT
-  }
-}
 
 //initial state
 const initialState = {
   value: 0
 }
 
+//action creators
+const increment = (value) => {
+  return {
+    type: INCREMENT,
+    payload: value
+  }
+}
+
+const decrement = (value) => {
+  return {
+    type: DECREMENT,
+    payload: value
+  }
+}
+
 //create reducer function
 const counterReducer = (state = initialState, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case INCREMENT:
       return {
-        value: state.value + 1
+        ...state,
+        value: state.value + action.payload
       }
     case DECREMENT:
       return {
-        value: state.value - 1
+        ...state,
+        value: state.value - action.payload
       }
     default:
       return state;
@@ -47,7 +54,11 @@ const store = Redux.createStore(counterReducer);
 
 //render function
 const render = () => {
-  counterEl.innerHTML = store.getState().value;
+  //get state from store
+  const state = store.getState();
+  //update DOM
+  counterEl.innerHTML = state.value;
+  console.log("counterEl:", counterEl.innerHTML);
 }
 
 //update DOM on load
@@ -59,20 +70,67 @@ store.subscribe(render);
 //dispatch actions
 incrementEl.addEventListener('keypress', function(e) {
   if (e.keyCode === 13) {
-    store.dispatch(increment());
+    const value = parseInt(e.target.value);
+    store.dispatch(increment(value));
   }
 });
 
 decrementEl.addEventListener('keypress', function(e) {
   if (e.keyCode === 13) {
-    store.dispatch(decrement());
+    const value = parseInt(e.target.value);
+    store.dispatch(decrement(value));
   }
 });
 
 
 //add match
 addMatchEl.addEventListener('click', function() {
-  console.log('add match');
+  //dynamic match number counter
+  const matchNumber = document.querySelectorAll('.match').length + 1;
+  //create match score div
+  const matchScore = document.createElement('div');
+  matchScore.classList.add('match');
+  matchScore.innerHTML = `
+                    <div class="wrapper">
+                        <button class="lws-delete">
+                            <img src="./image/delete.svg" alt="" />
+                        </button>
+                        <h3 class="lws-matchName">Match ${matchNumber}</h3>
+                    </div>
+                    <div class="inc-dec">
+                        <form class="incrementForm">
+                            <h4>Increment</h4>
+                            <input
+                                type="number"
+                                name="increment"
+                                class="lws-increment"
+                                id="increment"
+                            />
+                        </form>
+                        <form class="decrementForm">
+                            <h4>Decrement</h4>
+                            <input
+                                type="number"
+                                name="decrement"
+                                class="lws-decrement"
+                                id="decrement"
+                            />
+                        </form>
+                    </div>
+                    <div class="numbers">
+                        <h2 class="lws-singleResult" id="counter">120</h2>
+                    </div>
+                </div>
+  `;
+  addMatchScoreEl.appendChild(matchScore);
+});
+
+//reset all matches scores
+resetEl.addEventListener('click', function() {
+  const allMatches = document.querySelectorAll('.match');
+  allMatches.forEach((match) => {
+    match.remove();
+  });
 });
 
 
