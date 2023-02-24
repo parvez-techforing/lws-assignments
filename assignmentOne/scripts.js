@@ -139,11 +139,6 @@ resetEl.addEventListener('click', function() {
 
 //delete particular match
 deleteEl.addEventListener('click', function(e) {
-  e.target.parentElement.parentElement.parentElement.remove();
+  const match = e.target.closest('.match');
+  match.remove();
 });
-
-
-
-
-
-
